@@ -16,15 +16,8 @@ const App = () => {
   
   let flatList = useRef(null)
   
-  // let [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+  let [currentVideoIndex, setCurrentVideoIndex] = useState(0)
 
-  let videoIndex = useRef(0)
-
-  // let currentVideoIndex = 0
-
-  // useEffect( () => {
-  //   if (flatList !== null) flatList.current.scrollToIndex({ animated: true, index: videoIndexRef })
-  // }, [currentVideoIndex])
   
   const [assets] = useAssets([
     require('./assets/fire.mp4'),
@@ -42,23 +35,12 @@ const App = () => {
 
   const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
   
-  const onViewableItemsChanged = async (info) => {
-    try {
-      console.log('STATE: BEFORE', videoIndex.current)
-      console.log('INFO', info.changed[0].index)
-      if (info.changed[0].index !== videoIndex.current) {
-        console.log('NOT EQUAL')
-        videoIndex.current = info.changed[0].index       
-        flatList.current.scrollToIndex({ animated: true, index: videoIndex.current })
-        
-      } 
-      console.log('STATE: AFTER', videoIndex.current)  
-    } catch (error) {
-      console.log('error in on viewable items changed')
-    }
+  function onViewableItemsChanged(info) {
+    console.log('info.changed[0].index', info.changed[0].index)
+    const index = info.changed[0].index
+    if (index !== currentVideoIndex) setCurrentVideoIndex(index)
   } 
 
-  function
 
 
 
