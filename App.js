@@ -15,10 +15,7 @@ const App = () => {
   const deviceHeight = Dimensions.get('window').height
   
   let flatList = useRef(null)
-  
-  let [currentVideoIndex, setCurrentVideoIndex] = useState(0)
-
-  
+  const videoIndexRef = useRef(0)
   const [assets] = useAssets([
     require('./assets/fire.mp4'),
     require('./assets/nightsky.mp4'),
@@ -36,20 +33,14 @@ const App = () => {
   const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
   
   function onViewableItemsChanged(info) {
-    console.log('info.changed[0].index', info.changed[0].index)
+    const change = info.changed.length >= 1
     const index = info.changed[0].index
-    if (index !== currentVideoIndex) setCurrentVideoIndex(index)
+    if (change) videoIndexRef.current = index     
   } 
 
-
-
-
-  // HERE! 
-  // THIS NEEDS TO WORK WHEN CURRENT VIDEO INDEX UPDATES!!
   function onScrollEndDrag(event) {
-    console.log('on end drag', event)
-    console.log('END DRAG videoINDEXREF', currentVideoIndex)
-    // flatList.current.scrollToIndex({ animated: true, index: currentVideoIndex})
+    console.log('end drag event', event)
+    flatList.current.scrollToIndex({ animated: true, index: videoIndexRef.current })
   }
   
   const Item = ({ videoIndex, shouldPlay }) => 
@@ -67,15 +58,17 @@ const App = () => {
     </View>
 
   const renderItem = ({ item, index }) => {
-    console.log('render item current index', index)
+    console.log('render item', item.id)
     return (
       <Item 
         videoIndex={item.videoIndex} 
         shouldPlay={false}
-        // index={index} // not used
       />
     )
   } 
+
+  console.log('rendering ASSESTS', assets)
+  console.log('rendering CURRENT VIDEO INDEX', videoIndexRef.current)
 
   if (assets) return useMemo( () => {
     return (
@@ -88,7 +81,7 @@ const App = () => {
           keyExtractor={item => item.id}
           getItemLayout={(data, index) => (
             {length: deviceHeight, offset: deviceHeight * index, index}
-          )} // REVISE?         
+          )}     
           viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
           viewabilityConfig={viewabilityConfig}
         />
