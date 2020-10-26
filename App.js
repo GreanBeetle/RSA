@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { 
   Dimensions, 
-  StyleSheet, 
+
   View, 
   Text, 
   SafeAreaView,
@@ -14,96 +14,108 @@ import { Video } from 'expo-av'
 import { AppLoading } from 'expo'
 import COLORS from './src/colors'
 
-const VideoClip = ({ index, shouldPlay, setIndex }) => {
-
-console.log('index', index)
-
-  let content = <AppLoading />
-  const deviceWidth = Dimensions.get('window').width
-  const deviceHeight = Dimensions.get('window').height
+const App = React.memo(() => {
+  let flatList = useRef(null)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [assets] = useAssets([
     require('./assets/fire.mp4'),
     require('./assets/nightsky.mp4'),
     require('./assets/waves.mp4')
   ])
-  const pan = useState(new Animated.ValueXY())[0]
-  const panResponder = useState(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => {
-        pan.setOffset({
-          x: pan.x._value,
-          y: pan.y._value
-        });
-      },
-      onPanResponderMove: (_, gesture) => {
-        pan.x.setValue(gesture.dx)
-        pan.y.setValue(gesture.dy)
-      },
-      onPanResponderRelease: () => {
-        // pan.flattenOffset(); // KEEP? 
-        pan.y.setValue(0)
-        // IF greater than 1/2 or 1/3 deviceheight, move on to next video
-        // ELSE snap back to 0
-        // setIndex() // callback 
-      }
-    })
-  )[0]
+
+  useEffect( () => {}, [])
+
+
+  const deviceWidth = Dimensions.get('window').width
+  const deviceHeight = Dimensions.get('window').height
+  const data = [
+    { id: 'fire', videoIndex: 0 },
+    { id: 'nightsky', videoIndex: 1 },
+    { id: 'waves', videoIndex: 2 },
+  ]
+  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 50}
+
+
+  function onViewableItemsChanged(info) {
+    // console.log('viewable items changed', info)
+    console.log('info.changed[0].index', info.changed[0].index)
+    const index = info.changed[0].index
+    if (index !== currentVideoIndex) setCurrentVideoIndex(index)
+    
+  } 
+
+  // function onScrollEndDrag(event) {
+  //   console.log('on scroll end drag', event)
+  //   flatList.current.scrollToIndex({ animated: false, index: currentVideoIndex })
+  // }
   
+  // if (viewableItems.length) setCurrentVideoIndex(viewableItems[0].index)
+    
+  
+
+  const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
+  
+  const Item = ({ videoIndex, shouldPlay }) => 
+    <View style={{ flex: 1 }} >
+      <Video
+        source={assets[videoIndex]}
+        rate={1.0}
+        volume={1.0}
+        isMuted={false}
+        resizeMode={Video.RESIZE_MODE_COVER}
+        shouldPlay={shouldPlay}
+        isLooping
+        style={{ width: deviceWidth, height: deviceHeight }}
+      />
+    </View>
+
+  const renderItem = ({ item, index }) => {
+    console.log('render item current index', index)
+    return (
+      <Item 
+        videoIndex={item.videoIndex} 
+        shouldPlay={false}
+        index={index} 
+      />
+    )
+  } 
+
+
   if (assets) return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Animated.View
-        style={{
-          height: deviceWidth,
-          width: deviceHeight,
-          transform: [{ translateY: pan.y }]
-        }}
-        {...panResponder.panHandlers}
-      >
-        <Video
-          source={assets[index]}
-          rate={1.0}
-          volume={1.0}
-          isMuted={false}
-          resizeMode={Video.RESIZE_MODE_COVER}
-          shouldPlay={shouldPlay}
-          isLooping
-          style={{ width: deviceWidth, height: deviceHeight }}
-        />
-      </Animated.View>
+    <SafeAreaView>
+      <FlatList 
+
+        ref={flatList} 
+        data={data} 
+        renderItem={renderItem}
+        // onScroll={ (event) => handleScroll(event)}
+        // onScrollBeginDrag={ (event) => onScrollBegin(event) }
+        onScrollEndDrag={ event => onScrollEndDrag(event)}
+        // onMomentumScrollBegin={ (event, index) => handleScroll(event, index)}
+        keyExtractor={item => item.id}
+        // extraData={} // WILL NEED THIS TO RERENDER FLATLIST BECAUSE 
+        getItemLayout={(data, index) => (
+          {length: deviceHeight, offset: deviceHeight * index, index}
+        )}
+        // onViewableItemsChanged={info => onViewableItemsChanged(info)}
+        
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
+        viewabilityConfig={viewabilityConfig}
+      />
+
     </SafeAreaView>
   ) 
-  
-  return content 
-  
-  
 
-  
-}
-
-const VideoList = () => {
-  const data = [ 0, 1, 2 ]
-  const renderItem = ({ item }) => <VideoClip index={item} shouldPlay={true} /> 
-  return (
-    <FlatList data={data} renderItem={renderItem} />
+  if (!assets) return (
+    <AppLoading />
   )
-
-}
-
-
-
-
-const App = () => <VideoList />
+  
+}, () => true) 
  
   
-  // content = <VideoClip index={1} shouldPlay={true} />
 
 
-
-  
-
-
-export default App 
+export default App
 
 const styles = {
   container: {
