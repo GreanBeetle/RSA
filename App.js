@@ -16,6 +16,9 @@ import COLORS from './src/colors'
 
 const App = () => {
   let content = <AppLoading />
+  const deviceWidth = Dimensions.get('window').width
+  const deviceHeight = Dimensions.get('window').height
+  
   /************************************************
   PANRESPONDER
   *************************************************/
@@ -50,27 +53,32 @@ const App = () => {
   /************************************************
   ANIMATED
   *************************************************/
-  function moveBall() {
-    Animated.timing(value, { 
-      toValue: 1000,
-      duration: 1000,
-      useNativeDriver: false 
-    })
-    .start()
-  }
+  
   const animated = (
-    <View style={{flex: 1, alignItems: 'center'}}>
+    <SafeAreaView style={{flex: 1}}>
           <Animated.View 
             style={{
-              height: 100, 
-              width: 100,
-              borderRadius: 50, 
-              backgroundColor: COLORS.actionGreen,
+              height: deviceWidth, 
+              width: deviceHeight,
+    
+   
               transform: [{translateY: pan.y}] 
             }}
             {...panResponder.panHandlers}
-          />   
-    </View>
+          >
+              <Video
+                source={require('./assets/nightsky.mp4')}
+                rate={1.0}
+                volume={1.0}
+                isMuted={false}
+                resizeMode={Video.RESIZE_MODE_COVER}
+                shouldPlay
+                isLooping
+    
+                style={{ width: deviceWidth, height: deviceHeight }}
+              />
+          </Animated.View>   
+    </SafeAreaView>
   ) 
   content = animated
   /************************************************
