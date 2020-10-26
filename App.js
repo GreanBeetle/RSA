@@ -3,11 +3,13 @@ import { Dimensions, StyleSheet, View, Text, SafeAreaView} from 'react-native'
 import { useAssets } from 'expo-asset'
 import { Video } from 'expo-av'
 import { AppLoading } from 'expo'
+import COLORS from './src/colors'
 
 const App = () => {
-  
-  let content
-  
+  /************************************************ 
+  VIDEO 
+  *************************************************/
+  let content = <AppLoading />
   const [assets] = useAssets([
     require('./assets/fire.mp4'),
     require('./assets/nightsky.mp4'),
@@ -24,23 +26,29 @@ const App = () => {
         resizeMode={Video.RESIZE_MODE_COVER}
         shouldPlay
         isLooping
-        style={{width: 300, height: 300}}
+        style={{width: 300, height: 300}} // MOVE STYLE OUT 
       />
     </SafeAreaView>
   )
 
-
-
-  if (!assets) content = <AppLoading />
-
   if (assets) content = video 
- 
+  /************************************************
+  VIDEO 
+  *************************************************/
+
+
+  /************************************************
+  ANIMATIONS
+  *************************************************/
+  const animated = <View style={{height: 300, width: 300, backgroundColor: COLORS.actionGreen }}/> // MOVE STYLE OUT
   
+  /************************************************
+  ANIMATIONS
+  *************************************************/
   
 
   
-  console.log('rendering app')
-  console.log('assets', assets)
+
   return content 
 }
 
