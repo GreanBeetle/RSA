@@ -5,10 +5,9 @@ import {
   SafeAreaView,
   FlatList
 } from 'react-native'
-import { useAssets } from 'expo-asset' // maybe unnecessary 
+import { useAssets } from 'expo-asset'  
 import { Video } from 'expo-av'
 import { AppLoading } from 'expo'
-import COLORS from './src/colors'
 
 const App = () => {
   const deviceWidth = Dimensions.get('window').width
@@ -67,9 +66,6 @@ const App = () => {
     )
   } 
 
-  console.log('rendering ASSESTS', assets)
-  console.log('rendering CURRENT VIDEO INDEX', videoIndexRef.current)
-
   if (assets) return useMemo( () => {
     return (
       <SafeAreaView>
@@ -89,22 +85,12 @@ const App = () => {
     )
   }, [assets]) 
   
-   
-
   if (!assets) return useMemo(() => {
     return <AppLoading />
   }, [assets]) 
-  
    
 }
  
 export default App
 
-const styles = {
-  container: {
-    flex: 1,
-    alignItems: 'center', 
-    justifyContent: 'center'
-  }
-}
 
