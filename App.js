@@ -14,7 +14,7 @@ const App = () => {
   const [shouldPlay, setShouldPlay] = useState([true, false, false])  
   let flatList = useRef(null)
   const videoIndexRef = useRef(0)
-  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 30}
+  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 50}
   const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
 
   const [assets] = useAssets([
