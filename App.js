@@ -1,16 +1,15 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import { 
   Dimensions, 
-  View, 
   SafeAreaView,
   FlatList
 } from 'react-native'
 import { useAssets } from 'expo-asset'  
-import { Video } from 'expo-av'
 import { AppLoading } from 'expo'
+import { Item } from './src/components'
 
 const App = () => {
-  const deviceWidth = Dimensions.get('window').width
+
   const deviceHeight = Dimensions.get('window').height
   
   let flatList = useRef(null)
@@ -45,20 +44,7 @@ const App = () => {
   const renderItem = ({ item }) => {
     console.log('render item', item.id)
     const shouldPlay = item.videoIndex === videoIndexRef.current
-    return (
-      <View style={{ flex: 1 }} >
-        <Video
-          source={assets[item.videoIndex]}
-          rate={1.0}
-          volume={1.0}
-          isMuted={false}
-          resizeMode={Video.RESIZE_MODE_COVER}
-          shouldPlay={shouldPlay}
-          isLooping
-          style={{ width: deviceWidth, height: deviceHeight }}
-        />
-      </View>
-    )
+    return <Item item={item} shouldPlay={shouldPlay}/>
   } 
 
   if (assets) return useMemo( () => {
