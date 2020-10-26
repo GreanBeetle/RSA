@@ -9,11 +9,14 @@ import { AppLoading } from 'expo'
 import { Item } from './src/components'
 
 const App = () => {
-
+  const deviceWidth = Dimensions.get('window').width
   const deviceHeight = Dimensions.get('window').height
-  
+  const [shouldPlay, setShouldPlay] = useState([true, false, false])  
   let flatList = useRef(null)
   const videoIndexRef = useRef(0)
+  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 30}
+  const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
+
   const [assets] = useAssets([
     require('./assets/fire.mp4'),
     require('./assets/nightsky.mp4'),
@@ -26,10 +29,6 @@ const App = () => {
     { id: 'waves', videoIndex: 2 },
   ]
   
-  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 30}
-
-  const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
-  
   function onViewableItemsChanged(info) {
     const change = info.changed.length >= 1
     const index = info.changed[0].index
@@ -39,12 +38,26 @@ const App = () => {
   function onScrollEndDrag(event) {
     console.log('end drag event', event)
     flatList.current.scrollToIndex({ animated: true, index: videoIndexRef.current })
+    playVideo(videoIndexRef.current)
+  }
+
+  function playVideo(index) {
+    if (index === 0) setShouldPlay([true, false, false])
+    if (index === 1) setShouldPlay([false, true, false])
+    if (index === 2) setShouldPlay([false, false, true])
   }
   
   const renderItem = ({ item }) => {
     console.log('render item', item.id)
-    const shouldPlay = item.videoIndex === videoIndexRef.current
-    return <Item item={item} shouldPlay={shouldPlay}/>
+    return (
+      <Item 
+        item={item} 
+        shouldPlay={shouldPlay} 
+        assets={assets}
+        deviceHeight={deviceHeight}
+        deviceWidth={deviceWidth} 
+      />
+    ) 
   } 
 
   if (assets) return useMemo( () => {
@@ -64,11 +77,11 @@ const App = () => {
         />
       </SafeAreaView>
     )
-  }, [assets]) 
+  }, [assets, shouldPlay]) 
   
   if (!assets) return useMemo(() => {
     return <AppLoading />
-  }, [assets]) 
+  }, [assets, shouldPlay]) 
    
 }
  
