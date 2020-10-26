@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { 
   Dimensions, 
   View, 
@@ -16,7 +16,15 @@ const App = () => {
   
   let flatList = useRef(null)
   
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+  // let [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+
+  let videoIndex = useRef(0)
+
+  // let currentVideoIndex = 0
+
+  // useEffect( () => {
+  //   if (flatList !== null) flatList.current.scrollToIndex({ animated: true, index: videoIndexRef })
+  // }, [currentVideoIndex])
   
   const [assets] = useAssets([
     require('./assets/fire.mp4'),
@@ -30,15 +38,37 @@ const App = () => {
     { id: 'waves', videoIndex: 2 },
   ]
   
-  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 50}
+  const viewabilityConfig = { waitForInteraction: true, itemVisiblePercentThreshold: 30}
 
   const viewabilityConfigCallbackPairs = useRef([{viewabilityConfig, onViewableItemsChanged}])
   
-  function onViewableItemsChanged(info) {
-    console.log('info.changed[0].index', info.changed[0].index)
-    const index = info.changed[0].index
-    if (index !== currentVideoIndex) setCurrentVideoIndex(index)   
+  const onViewableItemsChanged = async (info) => {
+    try {
+      console.log('STATE: BEFORE', videoIndex.current)
+      console.log('INFO', info.changed[0].index)
+      if (info.changed[0].index !== videoIndex.current) {
+        console.log('NOT EQUAL')
+        videoIndex.current = info.changed[0].index       
+        flatList.current.scrollToIndex({ animated: true, index: videoIndex.current })
+        
+      } 
+      console.log('STATE: AFTER', videoIndex.current)  
+    } catch (error) {
+      console.log('error in on viewable items changed')
+    }
   } 
+
+  function
+
+
+
+  // HERE! 
+  // THIS NEEDS TO WORK WHEN CURRENT VIDEO INDEX UPDATES!!
+  function onScrollEndDrag(event) {
+    console.log('on end drag', event)
+    console.log('END DRAG videoINDEXREF', currentVideoIndex)
+    // flatList.current.scrollToIndex({ animated: true, index: currentVideoIndex})
+  }
   
   const Item = ({ videoIndex, shouldPlay }) => 
     <View style={{ flex: 1 }} >
@@ -65,9 +95,6 @@ const App = () => {
     )
   } 
 
-  console.log('rendering! assets are', assets)
-  console.log('rendering! currentVideoIndex', currentVideoIndex)
-
   if (assets) return useMemo( () => {
     return (
       <SafeAreaView>
@@ -75,7 +102,7 @@ const App = () => {
           ref={flatList} 
           data={data} 
           renderItem={renderItem}
-          // onScrollEndDrag={ event => onScrollEndDrag(event)}
+          onScrollEndDrag={ event => onScrollEndDrag(event)}
           keyExtractor={item => item.id}
           getItemLayout={(data, index) => (
             {length: deviceHeight, offset: deviceHeight * index, index}
@@ -91,7 +118,7 @@ const App = () => {
 
   if (!assets) return useMemo(() => {
     return <AppLoading />
-  }, []) 
+  }, [assets]) 
   
    
 }
