@@ -1,3 +1,5 @@
-import VideoClip from './VideoClip'
+import Item from './Item'
 
-export { VideoClip }
+export {
+  Item
+}

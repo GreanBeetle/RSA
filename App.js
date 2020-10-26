@@ -42,27 +42,22 @@ const App = () => {
     flatList.current.scrollToIndex({ animated: true, index: videoIndexRef.current })
   }
   
-  const Item = ({ videoIndex, shouldPlay }) => 
-    <View style={{ flex: 1 }} >
-      <Video
-        source={assets[videoIndex]}
-        rate={1.0}
-        volume={1.0}
-        isMuted={false}
-        resizeMode={Video.RESIZE_MODE_COVER}
-        shouldPlay={shouldPlay}
-        isLooping
-        style={{ width: deviceWidth, height: deviceHeight }}
-      />
-    </View>
-
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     console.log('render item', item.id)
+    const shouldPlay = item.videoIndex === videoIndexRef.current
     return (
-      <Item 
-        videoIndex={item.videoIndex} 
-        shouldPlay={false}
-      />
+      <View style={{ flex: 1 }} >
+        <Video
+          source={assets[item.videoIndex]}
+          rate={1.0}
+          volume={1.0}
+          isMuted={false}
+          resizeMode={Video.RESIZE_MODE_COVER}
+          shouldPlay={shouldPlay}
+          isLooping
+          style={{ width: deviceWidth, height: deviceHeight }}
+        />
+      </View>
     )
   } 
 
