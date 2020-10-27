@@ -95,7 +95,6 @@ const CommentModal = ({ width, height, videoID }) => {
             </View>
           </View>
         </View>
-      
     </Modal>
   )
 
@@ -104,9 +103,6 @@ const CommentModal = ({ width, height, videoID }) => {
   if (modalVisible) content = modal 
 
   return content
-  
-  
-  
 }
 
 export default CommentModal
