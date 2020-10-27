@@ -10,6 +10,10 @@ import {
 import { FontAwesome } from '@expo/vector-icons'
 import COLORS from '../colors'
 import { COMMENTS } from '../copy'
+import { 
+  GLOBAL_STYLES as STYLES,
+  COMMENT_MODAL_STYLES as styles 
+} from '../styles'
 
 
 const CommentModal = ({ width, height, videoID }) => {
@@ -17,17 +21,7 @@ const CommentModal = ({ width, height, videoID }) => {
 
   const marginTop = height * .8
   const marginLeft = width * .8
-  const styles = {
-    icon: { 
-      zIndex: 100, 
-      position: 'absolute', 
-      marginTop, 
-      marginLeft, 
-      height: 60, 
-      width: 60 
-    }
-  }
-
+  
   const [modalVisible, setModalVisible] = useState(false)
   const [comments, setComments] = useState(COMMENTS[videoID])
   const [newComment, setNewComment] = useState('')
@@ -45,7 +39,7 @@ const CommentModal = ({ width, height, videoID }) => {
 
   const commentIcon = (
     <Pressable 
-      style={styles.icon}  
+      style={[styles.icon, {marginTop, marginLeft}]}  
       onPress={toggleModal}> 
       <FontAwesome name="commenting-o" size={36} color="white" /> 
     </Pressable>
@@ -58,34 +52,29 @@ const CommentModal = ({ width, height, videoID }) => {
       visible={modalVisible} 
       presentationStyle="overFullScreen"
       onRequestClose={() => console.log('modal closed')}
-      style={{ zIndex: 100, marginBottom: 20, marginRight: 20, position: 'absolute'}}>
-        <View style={{flex: 1}}>
-          <View style={{flex: 1 }} />
-          <View style={{flex: 1, flexDirection: 'column', borderRadius: 25, backgroundColor: COLORS.lynxWhite }}>
+      style={styles.modal}>
+        <View style={STYLES.container}>
+          <View style={STYLES.container} />
+          <View style={styles.slideUpBox}>
             <Pressable 
-              style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}
+              style={styles.bigX}
               onPress={toggleModal}>
               <FontAwesome name="close" size={36} color={COLORS.textGray} />
             </Pressable> 
             <View style={{flex: 2}}>
               <FlatList
                 data={Array.from(comments).reverse()}
-                renderItem={({ item }) => <View style={{ marginHorizontal: 25, marginVertical: 10 }}><Text>{item}</Text></View>}
+                renderItem={({ item }) => (
+                  <View style={styles.flatListItem}>
+                    <Text>{item}</Text>
+                  </View>
+                )}
                 keyExtractor={item => item}
               />
             </View>
-            <View style={{ 
-                flex: 1, 
-                flexDirection: 'row',
-                margin: 25, 
-                marginBottom: 50, 
-                borderWidth: 1, 
-                borderColor: COLORS.borderGray, 
-                backgroundColor: COLORS.backgroundGray, 
-                borderRadius: 5 
-              }}>
+            <View style={styles.textInputContainer}>
               <TextInput 
-                style={{flex: 3, padding: 20}}
+                style={styles.textInput}
                 value={newComment}
                 onChangeText={ text => setNewComment(text)}
                 placeholder="Add comment ..."
