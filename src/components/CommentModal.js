@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { 
   Modal, 
-  View, 
+  View,
+  Text, 
   Pressable,
-  FlatList 
+  FlatList,
+  TextInput 
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import COLORS from '../colors'
@@ -11,10 +13,8 @@ import { COMMENTS } from '../copy'
 
 
 const CommentModal = ({ width, height, videoID }) => {
-  console.log('VIDEO ID', videoID)
-  console.log('COMMENTS', COMMENTS)
-
   let content
+
   const marginTop = height * .8
   const marginLeft = width * .8
   const styles = {
@@ -30,18 +30,18 @@ const CommentModal = ({ width, height, videoID }) => {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [comments, setComments] = useState(COMMENTS[videoID])
-
-  console.log('comments as set in state', comments)
+  const [newComment, setNewComment] = useState('')
 
 
   function toggleModal() {
     setModalVisible(!modalVisible)
   }
 
-  const CommentList = () => {
-    return (
-      <FlatList />
-    )
+  function handleSubmitComment(event) {
+    setNewComment('')
+    const newComments = new Set(Array.from(comments))
+    newComments.add(event.nativeEvent.text)
+    setComments(newComments)
   }
 
   const commentIcon = (
@@ -56,7 +56,7 @@ const CommentModal = ({ width, height, videoID }) => {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={modalVisible} // hmm possibly bad practice to use this here AND when setting content
+      visible={modalVisible} 
       presentationStyle="overFullScreen"
       onRequestClose={() => console.log('modal closed')}
       style={{ zIndex: 100, marginBottom: 20, marginRight: 20, position: 'absolute'}}>
@@ -68,8 +68,32 @@ const CommentModal = ({ width, height, videoID }) => {
               onPress={toggleModal}>
               <FontAwesome name="close" size={36} color={COLORS.textGray} />
             </Pressable> 
-            <View style={{flex: 5}}>
-            </View> 
+            <View style={{flex: 2}}>
+              <FlatList
+                data={Array.from(comments).reverse()}
+                renderItem={({ item }) => <View style={{ marginHorizontal: 25, marginVertical: 10 }}><Text>{item}</Text></View>}
+                keyExtractor={item => item}
+              />
+            </View>
+            <View style={{ 
+                flex: 1, 
+                flexDirection: 'row',
+                margin: 25, 
+                marginBottom: 50, 
+                borderWidth: 1, 
+                borderColor: COLORS.borderGray, 
+                backgroundColor: COLORS.backgroundGray, 
+                borderRadius: 5 
+              }}>
+              <TextInput 
+                style={{flex: 3, padding: 20}}
+                value={newComment}
+                onChangeText={ text => setNewComment(text)}
+                placeholder="Add comment ..."
+                returnKeyType="done"
+                onSubmitEditing={ event => handleSubmitComment(event)}
+                />
+            </View>
           </View>
         </View>
       
