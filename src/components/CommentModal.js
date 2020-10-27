@@ -46,7 +46,18 @@ const CommentModal = ({ width, height }) => {
       style={{ zIndex: 100, marginBottom: 20, marginRight: 20, position: 'absolute'}}>
         <View style={{flex: 1}}>
           <View style={{flex: 1 }} />
-          <View style={{flex: 1, flexDirection: 'column', borderRadius: 25, backgroundColor: COLORS.lynxWhite }}/> 
+          <View style={{flex: 1, flexDirection: 'column', borderRadius: 25, backgroundColor: COLORS.lynxWhite }}>
+            
+            <Pressable 
+              style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}
+              onPress={toggleModal}
+            >
+              <FontAwesome name="close" size={36} color={COLORS.textGray} />
+            </Pressable> 
+            
+            <View style={{flex: 5}}>
+            </View> 
+          </View>
         </View>
       
     </Modal>
