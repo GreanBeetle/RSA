@@ -1,10 +1,19 @@
 import React, { useState } from 'react'
-import { Modal, View, Pressable } from 'react-native'
+import { 
+  Modal, 
+  View, 
+  Pressable,
+  FlatList 
+} from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import COLORS from '../colors'
+import { COMMENTS } from '../copy'
 
 
-const CommentModal = ({ width, height }) => {
+const CommentModal = ({ width, height, videoID }) => {
+  console.log('VIDEO ID', videoID)
+  console.log('COMMENTS', COMMENTS)
+
   let content
   const marginTop = height * .8
   const marginLeft = width * .8
@@ -20,13 +29,20 @@ const CommentModal = ({ width, height }) => {
   }
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [comments, setComments] = useState(COMMENTS[videoID])
+
+  console.log('comments as set in state', comments)
+
 
   function toggleModal() {
-    console.log('comment icon pressed!')
     setModalVisible(!modalVisible)
   }
 
-  console.log('rendering modal component')
+  const CommentList = () => {
+    return (
+      <FlatList />
+    )
+  }
 
   const commentIcon = (
     <Pressable 
@@ -40,21 +56,18 @@ const CommentModal = ({ width, height }) => {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={modalVisible} // double usage of "modalVisible" probably not good
+      visible={modalVisible} // hmm possibly bad practice to use this here AND when setting content
       presentationStyle="overFullScreen"
       onRequestClose={() => console.log('modal closed')}
       style={{ zIndex: 100, marginBottom: 20, marginRight: 20, position: 'absolute'}}>
         <View style={{flex: 1}}>
           <View style={{flex: 1 }} />
           <View style={{flex: 1, flexDirection: 'column', borderRadius: 25, backgroundColor: COLORS.lynxWhite }}>
-            
             <Pressable 
               style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}
-              onPress={toggleModal}
-            >
+              onPress={toggleModal}>
               <FontAwesome name="close" size={36} color={COLORS.textGray} />
             </Pressable> 
-            
             <View style={{flex: 5}}>
             </View> 
           </View>

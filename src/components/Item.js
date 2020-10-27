@@ -10,6 +10,7 @@ const Item = ({ item, shouldPlay, assets, deviceHeight, deviceWidth }) => {
       <CommentModal 
         width={deviceWidth}
         height={deviceHeight}
+        videoID={item.id}
       />
       <Video
         source={assets[item.videoIndex]}
