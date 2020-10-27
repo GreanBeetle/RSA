@@ -5,7 +5,7 @@ import {
   Text, 
   Pressable,
   FlatList,
-  TextInput 
+  TextInput
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import COLORS from '../colors'
@@ -31,7 +31,6 @@ const CommentModal = ({ width, height, videoID }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [comments, setComments] = useState(COMMENTS[videoID])
   const [newComment, setNewComment] = useState('')
-
 
   function toggleModal() {
     setModalVisible(!modalVisible)
