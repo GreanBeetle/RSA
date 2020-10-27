@@ -36,7 +36,6 @@ const App = () => {
   } 
 
   function onScrollEndDrag(event) {
-    console.log('end drag event', event)
     flatList.current.scrollToIndex({ animated: true, index: videoIndexRef.current })
     playVideo(videoIndexRef.current)
   }

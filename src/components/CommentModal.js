@@ -3,19 +3,17 @@ import { Modal, View, Dimensions } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
 const CommentModal = ({ width, height }) => {
-  console.log('rendering modal')
   const marginTop = height * .8
   const marginLeft = width * .8
   const styles = {
-    icon: {
-      position: 'absolute',
-      zIndex: 100,
-      marginTop,
-      marginLeft 
-    }
+    icon: { marginTop, marginLeft }
   }
+
+  
+
+  console.log('rendering modal')
   return (
-    <View style={styles.icon}>
+    <View style={[{position: 'absolute', zIndex: 100 }, styles.icon]}>
       <FontAwesome name="commenting-o" size={36} color="white" /> 
     </View>
     // <Modal
