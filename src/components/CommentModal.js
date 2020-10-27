@@ -15,7 +15,6 @@ import {
   COMMENT_MODAL_STYLES as styles 
 } from '../styles'
 
-
 const CommentModal = ({ width, height, videoID }) => {
   let content
 
